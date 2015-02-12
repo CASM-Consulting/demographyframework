@@ -3,6 +3,7 @@ package uk.ac.susx.tag.demographyframework;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.apache.commons.lang3.tuple.Pair;
 import uk.ac.susx.tag.classificationframework.Evaluation;
 import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifier;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
@@ -12,9 +13,8 @@ import uk.ac.susx.tag.genderdetector.Country;
 import uk.ac.susx.tag.genderdetector.GenderDetector;
 import uk.ac.susx.tag.utils.Utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,8 +72,96 @@ public class TestController {
 		nb.writeJson(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_male_vs_female.json"), pipeline);
 
 		// Gender Detector
-		JsonReader reader = new JsonReader(new InputStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_male_vs_female.json")))
+		List<Pair<String, String>> data = new ArrayList<>();
+
+		InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/name_labelling_male_vs_female.json");
+		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+		reader.beginArray();
+		while (reader.hasNext()) {
+			reader.beginObject();
+			String name = null;
+			String gender = null;
+			while (reader.hasNext()) {
+				String key = reader.nextName();
+				switch (key) {
+					case "name":
+						name = reader.nextString();
+						break;
+					case "label":
+						gender = reader.nextString();
+						break;
+					case "id":
+						reader.nextInt(); // ignore
+						break;
+				}
+			}
+			reader.endObject();
+			data.add(Pair.of(name, gender));
+		}
+		reader.endArray();
+
+		// Genderize the stuff
 		GenderDetector gd = new GenderDetector(Country.CountryCode.UK);
-		System.out.println("GENDER GUESS: " + gd.guess("thomas"));
+
+		int trueCount = 0;
+		int malePrecisionEnum = 0;
+		int femalePrecisionEnum = 0;
+		int malePrecisionDenom = 0;
+		int femalePrecisionDenom = 0;
+		int femaleRecallEnum = 0;
+		int femaleRecallDenom = 0;
+		int maleRecallEnum = 0;
+		int maleRecallDenom = 0;
+
+		for (Pair<String, String> p : data) {
+			String predicted = gd.extractAndGuessString(p.getLeft()).toLowerCase();
+
+			// Accuracy
+			if (predicted.equals(p.getRight())) {
+				trueCount++;
+			}
+
+			// Precision
+			if (predicted.equals("male") && p.getRight().equals("male")) {
+				malePrecisionEnum++;
+			}
+			if (predicted.equals("male")) {
+				malePrecisionDenom++;
+			}
+
+			if (predicted.equals("female") && p.getRight().equals("female")) {
+				femalePrecisionEnum++;
+			}
+			if (predicted.equals("female")) {
+				femalePrecisionDenom++;
+			}
+
+			// Recall
+			if (p.getRight().equals("male") && predicted.equals("male")) {
+				maleRecallEnum++;
+			}
+			if (p.getRight().equals("male")) {
+				maleRecallDenom++;
+			}
+
+			if (p.getRight().equals("female") && predicted.equals("female")) {
+				femaleRecallEnum++;
+			}
+			if (p.getRight().equals("female")) {
+				femaleRecallDenom++;
+			}
+		}
+
+		double accuracy = trueCount / (double)data.size();
+		double malePrecision = malePrecisionEnum / (double)malePrecisionDenom;
+		double maleRecall = maleRecallEnum / (double)maleRecallDenom;
+		double femalePrecision = femalePrecisionEnum / (double)femalePrecisionDenom;
+		double femaleRecall = femaleRecallEnum / (double)femaleRecallDenom;
+
+		System.out.println("ACCURACY: " + accuracy);
+		System.out.println("MALE PRECISION: " + malePrecision);
+		System.out.println("MALE RECALL: " + maleRecall);
+		System.out.println("FEMALE PRECISION: " + femalePrecision);
+		System.out.println("FEMALE RECALL: " + femaleRecall);
 	}
 }

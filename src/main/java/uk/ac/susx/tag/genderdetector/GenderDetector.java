@@ -6,6 +6,7 @@ import uk.ac.susx.tag.utils.Utils;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
@@ -21,17 +22,23 @@ public class GenderDetector {
 	}
 
 	private Country country;
+	private String countryFileBasePath;
 
-	public GenderDetector(CountryCode countryCode, boolean applyBinomy) {
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath) {
 		this.country = new Country(countryCode, applyBinomy);
+		this.countryFileBasePath = countryFileBasePath;
 	}
 
-	public GenderDetector(CountryCode countryCode) {
-		this(countryCode, true);
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException {
+		this(countryCode, applyBinomy, GenderDetector.class.getResource("/data").toURI().getPath());
 	}
 
-	public GenderDetector() {
-		this(CountryCode.UK, true);
+	public GenderDetector(CountryCode countryCode) throws URISyntaxException {
+		this(countryCode, true, GenderDetector.class.getResource("/data").toURI().getPath());
+	}
+
+	public GenderDetector() throws URISyntaxException {
+		this(CountryCode.UK, true, GenderDetector.class.getResource("/data").toURI().getPath());
 	}
 
 	public Gender guess(String name) {
@@ -39,7 +46,7 @@ public class GenderDetector {
 		try {
 			name = normaliseName(name);
 
-			String p = String.format("%s/%s_index/%s.csv", GenderDetector.class.getResource("/data").toURI().getPath(), country.getCountryCode().toString().toLowerCase(), name.substring(0, 1));
+			String p = String.format("%s/%s_index/%s.csv", this.countryFileBasePath, country.getCountryCode().toString().toLowerCase(), name.substring(0, 1));
 
 			CSVReader reader = new CSVReader(new FileReader(p));
 
@@ -55,7 +62,7 @@ public class GenderDetector {
 			g =  (line != null) ? country.guess(line) : Gender.UNKNOWN;
 		} catch(IOException ex) {
 			// TODO: Something useful
-		} catch (URISyntaxException ex) {
+		} catch (StringIndexOutOfBoundsException ex) {
 			// TODO: Something useful
 		}
 		return g;
@@ -84,7 +91,7 @@ public class GenderDetector {
 		return g.toString();
 	}
 
-	private String normaliseName(String name) {
+	private String normaliseName(String name) throws StringIndexOutOfBoundsException { // Empty names
 		return name.substring(0, 1).toUpperCase().trim() + name.substring(1).toLowerCase().trim();
 	}
 }
