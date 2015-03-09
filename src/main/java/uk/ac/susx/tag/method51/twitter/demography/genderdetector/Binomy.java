@@ -1,4 +1,4 @@
-package uk.ac.susx.tag.genderdetector;
+package uk.ac.susx.tag.method51.twitter.demography.genderdetector;
 
 /**
  * Created by thk22 on 16/01/2015.

@@ -1,4 +1,4 @@
-package uk.ac.susx.tag.genderdetector;
+package uk.ac.susx.tag.method51.twitter.demography.genderdetector;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package uk.ac.susx.tag.utils;
+package uk.ac.susx.tag.method51.twitter.demography.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import uk.ac.susx.tag.genderdetector.Country;
-import uk.ac.susx.tag.genderdetector.GenderDetector;
+import uk.ac.susx.tag.method51.twitter.demography.genderdetector.Country;
+import uk.ac.susx.tag.method51.twitter.demography.genderdetector.GenderDetector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

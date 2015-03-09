@@ -10,9 +10,9 @@ import uk.ac.susx.tag.classificationframework.datastructures.ModelState;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
 import uk.ac.susx.tag.classificationframework.featureextraction.pipelines.FeatureExtractionPipeline;
 import uk.ac.susx.tag.classificationframework.jsonhandling.JsonListStreamReader;
-import uk.ac.susx.tag.genderdetector.Country;
-import uk.ac.susx.tag.genderdetector.GenderDetector;
-import uk.ac.susx.tag.utils.Utils;
+import uk.ac.susx.tag.method51.twitter.demography.genderdetector.Country;
+import uk.ac.susx.tag.method51.twitter.demography.genderdetector.GenderDetector;
+import uk.ac.susx.tag.method51.twitter.demography.utils.Utils;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -153,7 +153,7 @@ public class TestController {
 
 		System.out.println(gd.guess("thomas"));
 
-		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("/uk/ac/susx/tag/method51/twitter/demography/genderdetector/models/male_vs_female").toURI()));
+		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("models/male_vs_female").toURI()));
 	}
 
 	private static void genderClassification() throws IOException, URISyntaxException {
