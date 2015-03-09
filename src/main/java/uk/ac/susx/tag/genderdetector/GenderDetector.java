@@ -6,7 +6,6 @@ import uk.ac.susx.tag.utils.Utils;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
@@ -30,15 +29,15 @@ public class GenderDetector {
 	}
 
 	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException {
-		this(countryCode, applyBinomy, GenderDetector.class.getResource("/data").toURI().getPath());
+		this(countryCode, applyBinomy, GenderDetector.class.getResource("/genderdetector/data").toURI().getPath());
 	}
 
 	public GenderDetector(CountryCode countryCode) throws URISyntaxException {
-		this(countryCode, true, GenderDetector.class.getResource("/data").toURI().getPath());
+		this(countryCode, true, GenderDetector.class.getResource("/genderdetector/data").toURI().getPath());
 	}
 
 	public GenderDetector() throws URISyntaxException {
-		this(CountryCode.UK, true, GenderDetector.class.getResource("/data").toURI().getPath());
+		this(CountryCode.UK, true, GenderDetector.class.getResource("/genderdetector/data").toURI().getPath());
 	}
 
 	public Gender guess(String name) {

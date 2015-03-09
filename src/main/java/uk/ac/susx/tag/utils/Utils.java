@@ -64,7 +64,7 @@ public final class Utils {
 			System.out.println("EXTRACTED NAME: " + s);
 		}
 
-		System.out.println(Utils.class.getResource("/data").toURI().getPath());
+		System.out.println(Utils.class.getResource("/genderdetector/data").toURI().getPath());
 
 		GenderDetector gd = new GenderDetector(Country.CountryCode.UK, true);
 		System.out.println("GENDER GUESS: " + gd.guess("thomas"));

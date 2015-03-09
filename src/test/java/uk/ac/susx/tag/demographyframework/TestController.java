@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import org.apache.commons.lang3.tuple.Pair;
 import uk.ac.susx.tag.classificationframework.Evaluation;
 import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifier;
+import uk.ac.susx.tag.classificationframework.datastructures.ModelState;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
 import uk.ac.susx.tag.classificationframework.featureextraction.pipelines.FeatureExtractionPipeline;
 import uk.ac.susx.tag.classificationframework.jsonhandling.JsonListStreamReader;
@@ -14,6 +15,7 @@ import uk.ac.susx.tag.genderdetector.GenderDetector;
 import uk.ac.susx.tag.utils.Utils;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,140 @@ import java.util.List;
  * Created by thomas on 30/01/15.
  */
 public class TestController {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, URISyntaxException, ClassNotFoundException {
+
+		//socialGradeClassification();
+		//createSocialGradeModel();
+		//genderClassification();
+		genderClassificationFromModel();
+	}
+
+	private static void createSocialGradeModel() throws IOException {
+		Gson gson = Utils.getGson();
+
+		// Fine Grained Classification - Tweets
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine.json"), gson);
+		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		NaiveBayesClassifier nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		ModelState m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_tweets_fine"));
+
+		// Coarse Grained Classification - Tweets
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_tweets_coarse"));
+
+		// Fine Grained Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_profile_fine"));
+
+		// Coarse Grained Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_profile_coarse"));
+	}
+
+	private static void socialGradeClassification() throws IOException {
+		Gson gson = Utils.getGson();
+
+		// Fine Grained Classification - Tweets
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine_train.json"), gson);
+		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		NaiveBayesClassifier nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine_test.json"), gson);
+		System.out.println("==== EVAL NB - Tweets Fine Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Coarse Grained Classification - Tweets
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse_test.json"), gson);
+		System.out.println("==== EVAL NB - Tweets Coarse Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Fine Grained Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine_test.json"), gson);
+		System.out.println("==== EVAL NB - Profile Description Fine Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Coarse Grained Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_test.json"), gson);
+		System.out.println("==== EVAL NB - Profile Description Coarse Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Coarse Grained Classification - Profile Description and Tweets
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_and_tweets_dataset_coarse_train.json"), gson);
+		System.out.println("==== EVAL NB - Tweets and Profile Description Coarse Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+	}
+
+	private static void genderClassificationFromModel() throws IOException, URISyntaxException, ClassNotFoundException {
+		GenderDetector gd = new GenderDetector(Country.CountryCode.UK);
+
+		System.out.println(gd.guess("thomas"));
+
+		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("/genderdetector/models/male_vs_female").toURI()));
+	}
+
+	private static void genderClassification() throws IOException, URISyntaxException {
 		Gson gson = Utils.getGson();
 
 		// Individual vs. Institution
