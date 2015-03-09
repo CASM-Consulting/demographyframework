@@ -153,7 +153,7 @@ public class TestController {
 
 		System.out.println(gd.guess("thomas"));
 
-		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("/genderdetector/models/male_vs_female").toURI()));
+		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("models/male_vs_female").toURI()));
 	}
 
 	private static void genderClassification() throws IOException, URISyntaxException {
