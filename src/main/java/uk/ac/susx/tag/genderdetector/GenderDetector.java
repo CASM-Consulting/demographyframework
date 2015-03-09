@@ -29,15 +29,15 @@ public class GenderDetector {
 	}
 
 	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException {
-		this(countryCode, applyBinomy, GenderDetector.class.getResource("data").toURI().getPath());
+		this(countryCode, applyBinomy, GenderDetector.class.getResource("/uk/ac/susx/tag/method51/twitter/demography/genderdetector/data").toURI().getPath());
 	}
 
 	public GenderDetector(CountryCode countryCode) throws URISyntaxException {
-		this(countryCode, true, GenderDetector.class.getResource("data").toURI().getPath());
+		this(countryCode, true, GenderDetector.class.getResource("/uk/ac/susx/tag/method51/twitter/demography/genderdetector/data").toURI().getPath());
 	}
 
 	public GenderDetector() throws URISyntaxException {
-		this(CountryCode.UK, true, GenderDetector.class.getResource("data").toURI().getPath());
+		this(CountryCode.UK, true, GenderDetector.class.getResource("/uk/ac/susx/tag/method51/twitter/demography/genderdetector/data").toURI().getPath());
 	}
 
 	public Gender guess(String name) {
