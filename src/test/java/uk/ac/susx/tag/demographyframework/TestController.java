@@ -26,11 +26,11 @@ public class TestController {
 	public static void main(String[] args) throws IOException, URISyntaxException, ClassNotFoundException {
 
 		//socialGradeClassification();
-		//createSocialGradeModel();
+		createSocialGradeModel();
 		//genderClassification();
 		//genderClassificationFromModel();
 		//ageClassification();
-		createAgeModel();
+		//createAgeModel();
 	}
 
 	private static void ageClassification() throws IOException {
@@ -154,7 +154,7 @@ public class TestController {
 		Gson gson = Utils.getGson();
 
 		// Fine Grained Classification - Tweets
-		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine.json"), gson);
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine_codes.json"), gson);
 		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
@@ -165,7 +165,7 @@ public class TestController {
 		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_tweets_fine"));
 
 		// Coarse Grained Classification - Tweets
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse_codes.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
@@ -176,7 +176,7 @@ public class TestController {
 		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_tweets_coarse"));
 
 		// Fine Grained Classification - Profile Description
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine_codes.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
@@ -187,7 +187,7 @@ public class TestController {
 		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/socialgrade_profile_fine"));
 
 		// Coarse Grained Classification - Profile Description
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_codes.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
