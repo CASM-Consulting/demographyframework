@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import org.apache.commons.lang3.tuple.Pair;
 import uk.ac.susx.tag.classificationframework.Evaluation;
 import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifier;
+import uk.ac.susx.tag.classificationframework.datastructures.Instance;
 import uk.ac.susx.tag.classificationframework.datastructures.ModelState;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
 import uk.ac.susx.tag.classificationframework.featureextraction.pipelines.FeatureExtractionPipeline;
@@ -27,12 +28,12 @@ public class TestController {
 
 		//socialGradeClassification();
 		//createSocialGradeModel();
-		//genderClassification();
-		//genderClassificationFromModel();
+		genderClassification();
+		genderClassificationFromModel();
 		//ageClassification();
 		//createAgeModel();
 		//employmentStatusClassification();
-		createEmploymentStatusModel();
+		//createEmploymentStatusModel();
 	}
 
 	private static void ageClassification() throws IOException {
@@ -460,7 +461,8 @@ public class TestController {
 		// Gender Detector
 		List<Pair<String, String>> data = new ArrayList<>();
 
-		InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/name_labelling_male_vs_female.json");
+		//InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/name_labelling_male_vs_female.json");
+		InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female_gs.json");
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
 		while (reader.hasNext()) {
@@ -470,7 +472,8 @@ public class TestController {
 			while (reader.hasNext()) {
 				String key = reader.nextName();
 				switch (key) {
-					case "name":
+					//case "name":
+					case "text":
 						name = reader.nextString();
 						break;
 					case "label":
@@ -499,8 +502,21 @@ public class TestController {
 		int maleRecallEnum = 0;
 		int maleRecallDenom = 0;
 
+		int foundCount = 0;
+		int notFoundCount = 0;
+
 		for (Pair<String, String> p : data) {
 			String predicted = gd.extractAndGuessString(p.getLeft()).toLowerCase();
+
+			if (predicted.toLowerCase().equals("unknown")) {
+				notFoundCount++;
+				predicted = pipeline.labelString(nb.bestLabel(pipeline.extractFeatures(new Instance("", p.getLeft(), String.format("%d", p.getLeft().hashCode()))).getFeatures()));
+
+				//predicted = nb.bestLabel();
+
+			} else {
+				foundCount++;
+			}
 
 			// Accuracy
 			if (predicted.equals(p.getRight())) {
@@ -543,11 +559,17 @@ public class TestController {
 		double maleRecall = maleRecallEnum / (double)maleRecallDenom;
 		double femalePrecision = femalePrecisionEnum / (double)femalePrecisionDenom;
 		double femaleRecall = femaleRecallEnum / (double)femaleRecallDenom;
+		double maleF1 = (2 * (malePrecision * maleRecall)) / (malePrecision + maleRecall);
+		double femaleF1 = (2 * (femalePrecision * femaleRecall)) / (femalePrecision + femaleRecall);
 
 		System.out.println("ACCURACY: " + accuracy);
 		System.out.println("MALE PRECISION: " + malePrecision);
 		System.out.println("MALE RECALL: " + maleRecall);
 		System.out.println("FEMALE PRECISION: " + femalePrecision);
 		System.out.println("FEMALE RECALL: " + femaleRecall);
+		System.out.println("MALE F1:" + maleF1);
+		System.out.println("FEMAIL F1:" + femaleF1);
+		System.out.println("FOUND COUNT: " + foundCount);
+		System.out.println("NOT FOUND COUNT: " + notFoundCount);
 	}
 }
