@@ -20,12 +20,20 @@ public class GenderDetector {
 		UNKNOWN;
 	}
 
+	private static final String MR_PREFIX = "mr";
+	private static final String MRS_PREFIX = "mrs";
+
 	private Country country;
 	private String countryFileBasePath;
+	private boolean useMrsMrFeature;
 
-	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath) {
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath, boolean useMrsMrFeature) {
 		this.country = new Country(countryCode, applyBinomy);
 		this.countryFileBasePath = countryFileBasePath;
+		this.useMrsMrFeature = useMrsMrFeature;
+	}
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath) {
+		this(countryCode, applyBinomy, countryFileBasePath, true);
 	}
 
 	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException {
@@ -58,12 +66,15 @@ public class GenderDetector {
 				if (line[0].equals(name)) break;
 			}
 
-			g =  (line != null) ? country.guess(line) : Gender.UNKNOWN;
+			g = (line != null) ? country.guess(line) : Gender.UNKNOWN;
 		} catch(IOException ex) {
 			// TODO: Something useful
 		} catch (StringIndexOutOfBoundsException ex) {
 			// TODO: Something useful
 		}
+
+		// Apply Mrs/Mr prefix Feature
+		g = (useMrsMrFeature && g == Gender.UNKNOWN) ? (name.toLowerCase().equals(MR_PREFIX) ? Gender.MALE : (name.toLowerCase().equals(MRS_PREFIX)) ? Gender.FEMALE : Gender.UNKNOWN) : g;
 		return g;
 	}
 

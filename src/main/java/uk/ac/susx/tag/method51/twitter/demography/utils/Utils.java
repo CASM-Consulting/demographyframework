@@ -47,26 +47,40 @@ public final class Utils {
 		splitters.add("-");
 		splitters.add(".");
 		splitters.add(",");
+		splitters.add("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])"); // Epic camelCase splitter Regex, courtesy of http://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced
 
 		return Utils.extractName(twitterName, splitters);
 	}
 
 	public static void main(String[] args) throws URISyntaxException, IOException {
-		List<String> l = Utils.extractName("Thomas Kober");
-
-		for (String s : l) {
-			System.out.println("EXTRACTED NAME: " + s);
+		String[] names = {"MrXXX", "MrsXxx", "Mrabc", "Mrsss", "mrXxx", "mrsXxx", "mrsss", "mrasdf", "Thomas", "thomas", "ThomasKober", "Thomas Kober", "THOmasKober", "THOMASKOBER", "ThomasKOBER", "THOMASkober", "THOMASKober", "MrThomasKober", "MrKober"};
+		for (String name : names) {
+			System.out.println("NAME=" + name);
+			GenderDetector gd = new GenderDetector(Country.CountryCode.UK, true);
+			System.out.println("\tGENDER GUESS: " + gd.extractAndGuessString(name));
+			System.out.println("------");
 		}
+		/*
+		String[] names = {"Thomas", "thomas", "ThomasKober", "Thomas Kober", "THOmasKober", "THOMASKOBER", "ThomasKOBER", "THOMASkober", "THOMASKober"};
+		for (String name : names) {
+			List<String> l = Utils.extractName(name);
 
-		System.out.println("-----");
-		l = Utils.extractName("Thomas");
-		for (String s : l) {
-			System.out.println("EXTRACTED NAME: " + s);
+			System.out.println("INPUT: " + name);
+			for (String s : l) {
+				System.out.println("\tEXTRACTED NAME: " + s);
+			}
+
+			System.out.println("-----");
 		}
+		*/
+		//l = Utils.extractName("Thomas");
+		//for (String s : l) {
+		//	System.out.println("EXTRACTED NAME: " + s);
+		//}
 
-		System.out.println(Utils.class.getResource("/genderdetector/data").toURI().getPath());
+		//System.out.println(Utils.class.getResource("/genderdetector/data").toURI().getPath());
 
-		GenderDetector gd = new GenderDetector(Country.CountryCode.UK, true);
-		System.out.println("GENDER GUESS: " + gd.guess("thomas"));
+		//GenderDetector gd = new GenderDetector(Country.CountryCode.UK, true);
+		//System.out.println("GENDER GUESS: " + gd.guess("thomas"));
 	}
 }
