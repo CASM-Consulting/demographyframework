@@ -28,12 +28,70 @@ public class TestController {
 
 		//socialGradeClassification();
 		//createSocialGradeModel();
-		genderClassification();
-		genderClassificationFromModel();
+		//genderClassification();
+		//genderClassificationFromModel();
 		//ageClassification();
 		//createAgeModel();
 		//employmentStatusClassification();
 		//createEmploymentStatusModel();
+		//presenceOfChildrenClassification();
+		createPresenceOfChildrenModel();
+	}
+
+	private static void createPresenceOfChildrenModel() throws IOException {
+		Gson gson = Utils.getGson();
+
+		// Classification - Tweets
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/tweets_dataset.json"), gson);
+		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		NaiveBayesClassifier nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		ModelState m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/presence_of_children_tweets"));
+
+		// Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/profile_description_dataset.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/presence_of_children_description"));
+	}
+
+	private static void presenceOfChildrenClassification() throws IOException {
+		Gson gson = Utils.getGson();
+
+		// Classification - Tweets
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/tweets_dataset_train.json"), gson);
+		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		NaiveBayesClassifier nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/tweets_dataset_test.json"), gson);
+		System.out.println("==== EVAL NB - Tweets =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Fine Grained Classification - Profile Description
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/profile_description_dataset_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/presence_of_children/profile_description_dataset_test.json"), gson);
+		System.out.println("==== EVAL NB - Profile Description Fine Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
 	}
 
 	private static void ageClassification() throws IOException {
