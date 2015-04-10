@@ -84,10 +84,6 @@ public class GenderDetector {
 		return g.toString();
 	}
 
-	private String normaliseName(String name) throws StringIndexOutOfBoundsException { // Empty names
-		return name.substring(0, 1).toUpperCase().trim() + name.substring(1).toLowerCase().trim();
-	}
-
 	private Map<String, String[]> cacheNameLookup() throws IOException {
 		String p = String.format("%s/%sprocessed.csv", countryFileBasePath, country.getCountryCode().toString().toLowerCase());
 
@@ -102,9 +98,6 @@ public class GenderDetector {
 
 		while ((line = reader.readNext()) != null) {
 			String name = line[0];
-			//String[] slice = Arrays.stream(line).skip(1).toArray(size -> new String[size]); // <-- is it just me doing it wrong or is this way of slicing super unwieldy?
-			//String[] slice = Arrays.copyOfRange(line, 1, line.length);
-
 			lookup.put(name.toLowerCase(), line);
 		}
 
