@@ -3,12 +3,19 @@ package uk.ac.susx.tag.demographyframework;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
+import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import uk.ac.susx.tag.classificationframework.Evaluation;
 import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifier;
+import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifierPreComputed;
+import uk.ac.susx.tag.classificationframework.datastructures.Document;
 import uk.ac.susx.tag.classificationframework.datastructures.Instance;
 import uk.ac.susx.tag.classificationframework.datastructures.ModelState;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
+import uk.ac.susx.tag.classificationframework.exceptions.EvaluationException;
 import uk.ac.susx.tag.classificationframework.featureextraction.pipelines.FeatureExtractionPipeline;
 import uk.ac.susx.tag.classificationframework.jsonhandling.JsonListStreamReader;
 import uk.ac.susx.tag.method51.twitter.demography.genderdetector.Country;
@@ -18,7 +25,9 @@ import uk.ac.susx.tag.method51.twitter.demography.utils.Utils;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created by thomas on 30/01/15.
@@ -35,7 +44,8 @@ public class TestController {
 		//employmentStatusClassification();
 		//createEmploymentStatusModel();
 		//presenceOfChildrenClassification();
-		createPresenceOfChildrenModel();
+		//createPresenceOfChildrenModel();
+		genderClassificationDynamicPriors();
 	}
 
 	private static void createPresenceOfChildrenModel() throws IOException {
@@ -146,6 +156,32 @@ public class TestController {
 
 		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_coarse_test.json"), gson);
 		System.out.println("==== EVAL NB - Profile Description Coarse Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Fine Grained Classification - Train on tweets, classify profile descriptions
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_fine_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_fine_test.json"), gson);
+		System.out.println("==== EVAL NB - Training: Tweets Fine Grained; Classification Profile Descriptions Fine Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Coarse Grained Classification - Train on tweets, classify profile descriptions
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_coarse_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_coarse_test.json"), gson);
+		System.out.println("==== EVAL NB - Training: Tweets Coarse Grained; Classification Profile Descriptions Coarse Grained =======");
 		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
 		System.out.println("====================");
 
@@ -314,6 +350,32 @@ public class TestController {
 		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
 		System.out.println("====================");
 
+		// Fine Grained Classification - Train on tweets, classify profile descriptions
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_fine_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_fine_test.json"), gson);
+		System.out.println("==== EVAL NB - Training: Tweets Fine Grained; Classification Profile Descriptions Fine Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
+		// Coarse Grained Classification - Train on tweets, classify profile descriptions
+		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/tweets_dataset_coarse_train.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_test.json"), gson);
+		System.out.println("==== EVAL NB - Training: Tweets Coarse Grained; Classification Profile Descriptions Coarse Grained =======");
+		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
+		System.out.println("====================");
+
 		// Coarse Grained Classification - Profile Description and Tweets
 		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/socialclass/profile_description_dataset_coarse_train.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
@@ -456,6 +518,105 @@ public class TestController {
 
 		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
 		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/employment_status_profile_coarse"));
+	}
+
+	private static void genderClassificationDynamicPriors() throws URISyntaxException, IOException, ClassNotFoundException {
+		GenderDetector gd = new GenderDetector(Country.CountryCode.UK);
+		Gson gson = Utils.getGson();
+
+		ModelState m = ModelState.load(new File(GenderDetector.class.getResource("models/male_vs_female").toURI()));
+
+		// Classify TSB Users with pre-trained model without dynamic priors
+		NaiveBayesClassifierPreComputed nb = (NaiveBayesClassifierPreComputed)m.classifier.getPrecomputedClassifier();
+		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_dataset_test.json"), gson);
+		System.out.println("==== EVAL NB - pre-trained, no dynamic priors =======");
+		System.out.println(new Evaluation(nb, m.pipeline, goldStandardStream.iterableOverProcessedInstances(m.pipeline)));
+		System.out.println("====================");
+
+		/*
+		The below results are somewhat expected, the trained model has a prior bias of 67:33 towards male whereas on the evaluation dataset
+		its roughly the other way round. Hence, while recall on male is very high (the majority of users being classified as male), the precision
+		is rather low, for female its the other way round, we need a lot more evidence to classify a user as female, hence results are quite
+		precise, however at the cost of missing many cases.
+		==== EVAL NB - pre-trained, no dynamic priors =======
+		female
+
+		  Precision : 0.881
+		  Recall    : 0.421
+		  FB1       : 0.57
+
+		male
+
+		  Precision : 0.503
+		  Recall    : 0.912
+		  FB1       : 0.649
+
+		Accuracy    : 0.613
+
+		Confusion Matrix (rows = actual label, columns = predicted label)
+
+		  X		fem mal
+		  fem	512	705
+		  mal	69	714
+
+		====================
+		 */
+
+		// Classify TSB Users with pre-trained model with dynamic priors
+		int batchSize = 20;
+		nb = (NaiveBayesClassifierPreComputed)m.classifier.getPrecomputedClassifier();
+		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset_test.json"), gson);
+
+		Int2IntOpenHashMap dynamicPriors = new Int2IntOpenHashMap();
+		dynamicPriors.defaultReturnValue(0);
+
+		List<ProcessedInstance> l = new LinkedList<>();
+
+		System.out.println("Starting Priors: " + nb.getLabelPriors());
+
+		int totalDocuments = 0;
+		int totalCorrect = 0;
+		for (Instance doc : goldStandardStream.iterableOverInstances()) {
+			String[] parts = doc.text.split(" ABCDEFGHIJKLMNOPQRSTUVWXYZ "); // Hacky-whacky FTW!!!
+			String name = parts[0];
+
+			String gender = gd.extractAndGuessString(name).toLowerCase();
+			if (!gender.equals("unknown")) {
+				dynamicPriors.addTo(m.pipeline.labelIndex(gender), 1);
+
+				int sum = dynamicPriors.values().stream().reduce(0, (a, b) -> a + b);
+				int min = dynamicPriors.values().stream().reduce(Integer.MAX_VALUE, (a, b) -> b < a ? b : a);
+				if (sum % batchSize == 0 && (dynamicPriors.size() > 1 && min > 0)) { // <-- make sure we've observed EVERY target label...
+					Int2DoubleMap priors = new Int2DoubleOpenHashMap();
+					for (int idx : dynamicPriors.keySet()) {
+						priors.put(idx, Math.log((double)dynamicPriors.get(idx)) - Math.log((double)sum));
+					}
+					System.out.println("Current Priors: " + nb.getLabelPriors());
+					nb.setLabelPriors(priors);
+				}
+			}
+			doc.text = parts[1];
+
+			ProcessedInstance p = m.pipeline.extractFeatures(doc);
+
+			l.add(p);
+			/*
+			String systemLabel = m.pipeline.labelString(nb.bestLabel(p.features));
+			String goldLabel = m.pipeline.labelString(p.getLabel());
+
+			if (systemLabel.equals(goldLabel))
+				totalCorrect++;
+			totalDocuments++;
+			*/
+		}
+
+		System.out.println("==== EVAL NB - pre-trained, dynamic priors =======");
+		System.out.println(new Evaluation(nb, m.pipeline, l));
+		System.out.println("====================");
+
+
+
+		// Classify TSB Users with pre-trained model with dynamic priors, starting from uniform priors
 	}
 
 	private static void genderClassificationFromModel() throws IOException, URISyntaxException, ClassNotFoundException {

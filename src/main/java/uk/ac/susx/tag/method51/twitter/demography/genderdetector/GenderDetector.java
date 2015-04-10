@@ -4,11 +4,11 @@ import au.com.bytecode.opencsv.CSVReader;
 import uk.ac.susx.tag.method51.twitter.demography.genderdetector.Country.CountryCode;
 import uk.ac.susx.tag.method51.twitter.demography.utils.Utils;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by thomas on 29/01/15.
@@ -22,59 +22,42 @@ public class GenderDetector {
 
 	private static final String MR_PREFIX = "mr";
 	private static final String MRS_PREFIX = "mrs";
+	private static final String MS_PREFIX = "ms";
 
 	private Country country;
 	private String countryFileBasePath;
 	private boolean useMrsMrFeature;
+	private Map<String, String[]> nameLookup;
 
-	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath, boolean useMrsMrFeature) {
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath, boolean useMrsMrFeature) throws IOException{
 		this.country = new Country(countryCode, applyBinomy);
 		this.countryFileBasePath = countryFileBasePath;
 		this.useMrsMrFeature = useMrsMrFeature;
+		this.nameLookup = cacheNameLookup();
 	}
-	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath) {
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy, String countryFileBasePath) throws IOException {
 		this(countryCode, applyBinomy, countryFileBasePath, true);
 	}
 
-	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException {
+	public GenderDetector(CountryCode countryCode, boolean applyBinomy) throws URISyntaxException, IOException {
 		this(countryCode, applyBinomy, GenderDetector.class.getResource("data").toURI().getPath());
 	}
 
-	public GenderDetector(CountryCode countryCode) throws URISyntaxException {
+	public GenderDetector(CountryCode countryCode) throws URISyntaxException, IOException {
 		this(countryCode, true, GenderDetector.class.getResource("data").toURI().getPath());
 	}
 
-	public GenderDetector() throws URISyntaxException {
+	public GenderDetector() throws URISyntaxException, IOException {
 		this(CountryCode.UK, true, GenderDetector.class.getResource("data").toURI().getPath());
 	}
 
 	public Gender guess(String name) {
-		Gender g = Gender.UNKNOWN;
-		try {
-			name = normaliseName(name);
+		String[] stats = nameLookup.getOrDefault(name.toLowerCase(), null);
 
-			String p = String.format("%s/%s_index/%s.csv", this.countryFileBasePath, country.getCountryCode().toString().toLowerCase(), name.substring(0, 1));
+		Gender g = (stats != null) ? country.guess(stats) : Gender.UNKNOWN;
 
-			CSVReader reader = new CSVReader(new FileReader(p));
-
-			// Skip header
-			reader.readNext();
-
-			String[] line;
-
-			while ((line = reader.readNext()) != null) {
-				if (line[0].equals(name)) break;
-			}
-
-			g = (line != null) ? country.guess(line) : Gender.UNKNOWN;
-		} catch(IOException ex) {
-			// TODO: Something useful
-		} catch (StringIndexOutOfBoundsException ex) {
-			// TODO: Something useful
-		}
-
-		// Apply Mrs/Mr prefix Feature
-		g = (useMrsMrFeature && g == Gender.UNKNOWN) ? (name.toLowerCase().equals(MR_PREFIX) ? Gender.MALE : (name.toLowerCase().equals(MRS_PREFIX)) ? Gender.FEMALE : Gender.UNKNOWN) : g;
+		// Apply Mrs/Ms/Mr prefix Feature
+		g = (useMrsMrFeature && g == Gender.UNKNOWN) ? (name.toLowerCase().equals(MR_PREFIX) ? Gender.MALE : (name.toLowerCase().equals(MRS_PREFIX)) ? Gender.FEMALE : (name.toLowerCase().equals(MS_PREFIX)) ? Gender.FEMALE : Gender.UNKNOWN) : g;
 		return g;
 	}
 
@@ -103,5 +86,28 @@ public class GenderDetector {
 
 	private String normaliseName(String name) throws StringIndexOutOfBoundsException { // Empty names
 		return name.substring(0, 1).toUpperCase().trim() + name.substring(1).toLowerCase().trim();
+	}
+
+	private Map<String, String[]> cacheNameLookup() throws IOException {
+		String p = String.format("%s/%sprocessed.csv", countryFileBasePath, country.getCountryCode().toString().toLowerCase());
+
+		Map<String, String[]> lookup = new HashMap<>();
+
+		CSVReader reader = new CSVReader(new FileReader(p));
+
+		// Skip header
+		reader.readNext();
+
+		String[] line;
+
+		while ((line = reader.readNext()) != null) {
+			String name = line[0];
+			//String[] slice = Arrays.stream(line).skip(1).toArray(size -> new String[size]); // <-- is it just me doing it wrong or is this way of slicing super unwieldy?
+			//String[] slice = Arrays.copyOfRange(line, 1, line.length);
+
+			lookup.put(name.toLowerCase(), line);
+		}
+
+		return lookup;
 	}
 }
