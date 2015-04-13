@@ -53,7 +53,7 @@ public final class Utils {
 	}
 
 	public static void main(String[] args) throws URISyntaxException, IOException {
-		String[] names = {"MrXXX", "MrsXxx", "Mrabc", "Mrsss", "mrXxx", "mrsXxx", "msXxx", "mssss", "MSAbc", "MSAC", "MsAbc", "mrsss", "mrasdf", "Thomas", "thomas", "ThomasKober", "Thomas Kober", "THOmasKober", "THOMASKOBER", "ThomasKOBER", "THOMASkober", "THOMASKober", "MrThomasKober", "MrKober"};
+		String[] names = {"Joanna", "James", "Mary", "Mike", "Julia", "John", "Phoebe", "Peter", "Sharon", "Steve", "MrXXX", "MrsXxx", "Mrabc", "Mrsss", "mrXxx", "mrsXxx", "msXxx", "mssss", "MSAbc", "MSAC", "MsAbc", "mrsss", "mrasdf", "Thomas", "thomas", "ThomasKober", "Thomas Kober", "THOmasKober", "THOMASKOBER", "ThomasKOBER", "THOMASkober", "THOMASKober", "MrThomasKober", "MrKober"};
 		for (String name : names) {
 			System.out.println("NAME=" + name);
 			GenderDetector gd = new GenderDetector(Country.CountryCode.UK, true);

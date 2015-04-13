@@ -43,10 +43,6 @@ public class Country {
 
 		Binomy b = new Binomy(maleCount, femaleCount);
 
-		System.out.println("3 " + csvLine[3]);
-		System.out.println("4 " + csvLine[4]);
-		System.out.println("2 " + csvLine[2]);
-
 		// malev uses an if statment in the python code, TODO: check if there are inconsistencies between the gender in the file and the counts
 		return (b.enoughConfidence()) ? GenderDetector.Gender.valueOf(csvLine[4].toUpperCase()) : GenderDetector.Gender.UNKNOWN;
 	}
