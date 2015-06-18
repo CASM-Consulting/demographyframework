@@ -41,12 +41,23 @@ public class TestController {
 		//genderClassificationFromModel();
 		//ageClassification();
 		//createAgeModel();
+		createGenderMaleVsFemaleModel();
 		//employmentStatusClassification();
 		//createEmploymentStatusModel();
 		//presenceOfChildrenClassification();
 		//createPresenceOfChildrenModel();
-		genderClassificationDynamicPriors();
+		//genderClassificationDynamicPriors();
+
+		// Cross Validation
+		//	- Gender
+		//	- Age
+		//crossValidateAgeModel();
+		//	- Social Grade
+		//	- Employment Status
+		//	- Presence of Children
 	}
+
+
 
 	private static void createPresenceOfChildrenModel() throws IOException {
 		Gson gson = Utils.getGson();
@@ -197,6 +208,20 @@ public class TestController {
 		System.out.println("==== EVAL NB - Tweets and Profile Description Coarse Grained =======");
 		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
 		System.out.println("====================");
+	}
+
+	private static void createGenderMaleVsFemaleModel() throws IOException {
+		Gson gson = Utils.getGson();
+
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged.json"), gson);
+		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		List<ProcessedInstance> trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
+
+		NaiveBayesClassifier nb = new NaiveBayesClassifier();
+		nb.train(trainingData);
+
+		ModelState m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
+		m.save(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_merged"));
 	}
 
 	private static void createAgeModel() throws IOException {
@@ -565,7 +590,8 @@ public class TestController {
 		// Classify TSB Users with pre-trained model with dynamic priors
 		int batchSize = 20;
 		nb = (NaiveBayesClassifierPreComputed)m.classifier.getPrecomputedClassifier();
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset_test.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset_test.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset_test.json"), gson);
 
 		Int2IntOpenHashMap dynamicPriors = new Int2IntOpenHashMap();
 		dynamicPriors.defaultReturnValue(0);
@@ -631,11 +657,10 @@ public class TestController {
 		Gson gson = Utils.getGson();
 
 		// Individual vs. Institution
-		/*
-		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/GenderLabelling/individual_vs_institution.json"), gson);
-		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/GenderLabelling/individual_vs_institution_gs.jon"), gson);
-		*/
-		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution.json"), gson);
+		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/polly/GenderLabelling/individual_vs_institution.json"), gson);
+		//JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/GenderLabelling/individual_vs_institution_gs.jon"), gson);
+
+		//JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution.json"), gson);
 		//JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution_gs.jon"), gson);
 
 		FeatureExtractionPipeline pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false); // Exciting new pipeline builder
@@ -647,19 +672,19 @@ public class TestController {
 		NaiveBayesClassifier nb = new NaiveBayesClassifier();
 		nb.train(trainingData);
 
-		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution_gs.json"), gson);
+		//JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution_gs.json"), gson);
+		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/polly/GenderLabelling/individual_vs_institution_gs.jon"), gson);
 		System.out.println("==== EVAL NB - Individual vs. Institution =======");
 		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
 		System.out.println("====================");
 
-		nb.writeJson(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_individual_vs_institution.json"), pipeline);
+		//nb.writeJson(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_individual_vs_institution.json"), pipeline);
 
 		// Male vs. Female
-		/*
-		JsonListStreamReader trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/GenderLabelling/individual_vs_institution.json"), gson);
-		JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/GenderLabelling/individual_vs_institution_gs.jon"), gson);
-		*/
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female.json"), gson);
+
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/polly/GenderLabelling/individual_vs_institution.json"), gson);
+
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female.json"), gson);
 		//JsonListStreamReader goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_individual_vs_institution_gs.jon"), gson);
 
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false); // Exciting new pipeline builder
@@ -670,18 +695,20 @@ public class TestController {
 		nb = new NaiveBayesClassifier();
 		nb.train(trainingData);
 
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female_gs.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female_gs.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/polly/GenderLabelling/individual_vs_institution_gs.jon"), gson);
 		System.out.println("==== EVAL NB - Male vs. Female =======");
 		System.out.println(new Evaluation(nb, pipeline, goldStandardStream.iterableOverProcessedInstances(pipeline)));
 		System.out.println("====================");
 
-		nb.writeJson(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_male_vs_female.json"), pipeline);
+		//nb.writeJson(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/models/nb_male_vs_female.json"), pipeline);
 
 		// Gender Detector
 		List<Pair<String, String>> data = new ArrayList<>();
 
 		//InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/name_labelling_male_vs_female.json");
-		InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female_gs.json");
+		//InputStream in = new FileInputStream("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/gender_labelling_male_vs_female_gs.json");
+		InputStream in = new FileInputStream("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/gender_labelling_male_vs_female_gs.json");
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
 		while (reader.hasNext()) {
