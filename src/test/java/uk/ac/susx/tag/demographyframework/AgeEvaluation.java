@@ -87,28 +87,32 @@ public class AgeEvaluation {
 		JsonListStreamReader goldStandardStream = null;
 
 		// Cross Validation over Age Profile Descriptions, coarse, incl 2-4 digit
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Profile Descriptions; Coarse Grained; incl 2-4 digits", "ageClassificationProfileDescriptionCoarseIncl24digits.csv", false);
 
 		// Cross Validation over Age Profile Descriptions, fine, incl 2-4 digit
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_fine.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_fine.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_fine.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Profile Descriptions; Fine Grained; incl 2-4 digits", "ageClassificationProfileDescriptionFineIncl24digits.csv", true);
 
 		// Cross Validation over Age Tweets, coarse, incl 2-4 digit
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Tweets; Coarse Grained; incl 2-4 digits", "ageClassificationTweetsCoarseIncl24digits.csv", false);
 
 		// Cross Validation over Age Tweets, fine, incl 2-4 digit
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
@@ -156,14 +160,14 @@ public class AgeEvaluation {
 		System.out.println("\tNB Leftover Macro F1-Score: " + ae.macroF1ScoreNB );
 		System.out.println("\t----------------------------------------------");
 
-		String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
-		try {
-			ae.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
-			ae.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
-			ae.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+		//String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
+		//try {
+		//	ae.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
+		//	ae.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
+		//	ae.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
+		//} catch (IOException ex) {
+		//	ex.printStackTrace();
+		//}
 
 		ae.accuracy = 0.;
 		ae.weightedPrecision = 0.;

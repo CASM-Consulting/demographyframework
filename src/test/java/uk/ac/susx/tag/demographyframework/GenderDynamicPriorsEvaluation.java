@@ -137,12 +137,12 @@ public class GenderDynamicPriorsEvaluation {
 		System.out.println("\tMacro F1-Score: " + macroF1Score);
 		System.out.println("\t----------------------------------------------");
 
-		String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
-		try {
-			saveConfusionMatrixAsCsv(basePath + fname);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+		//String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
+		//try {
+		//	saveConfusionMatrixAsCsv(basePath + fname);
+		//} catch (IOException ex) {
+		//	ex.printStackTrace();
+		//}
 
 		accuracy = 0.;
 		weightedPrecision = 0.;
@@ -228,7 +228,8 @@ public class GenderDynamicPriorsEvaluation {
 		JsonListStreamReader goldStandardStream = null;
 
 		// Train on my labelled data, test on TSB labelled data (excl Gazeteer)
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
@@ -236,7 +237,8 @@ public class GenderDynamicPriorsEvaluation {
 		nb.train(trainingData);
 
 		ModelState m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
-		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/genderMy"));
+		//m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/genderMy"));
+		m.save(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/genderMy"));
 
 		m = ModelState.load(new File(GenderDetector.class.getResource("models/male_vs_female").toURI()));
 
@@ -249,14 +251,17 @@ public class GenderDynamicPriorsEvaluation {
 		}
 		System.out.println("===================================================================\n");
 
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph//resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
 		evaluateWithGazeteer(preComputedNB, goldStandardStream, pipeline, false, 20, "Train on MY, test on TSB; no dynamic priors", "genderTrainMyEvalTSBNoDynPriors.csv");
 
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
 		evaluateWithGazeteer(preComputedNB, goldStandardStream, pipeline, true, 20, "Train on MY, test on TSB; dynamic priors", "genderTrainMyEvalTSBInclDynPriors.csv");
 
 		// Train on TSB data, test on my labelled data (excl Gazeteer)
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverProcessedInstances(pipeline));
 
@@ -264,7 +269,8 @@ public class GenderDynamicPriorsEvaluation {
 		nb.train(trainingData);
 
 		m = new ModelState(nb, ModelState.getSourceInstanceList(trainingData), pipeline);
-		m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/genderTSB"));
+		//m.save(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_datasets/polly/genderTSB"));
+		m.save(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/genderTSB"));
 
 		preComputedNB = (NaiveBayesClassifierPreComputed) m.classifier.getPrecomputedClassifier();
 
@@ -274,10 +280,12 @@ public class GenderDynamicPriorsEvaluation {
 		}
 		System.out.println("===================================================================\n");
 
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
 		evaluateWithGazeteer(preComputedNB, goldStandardStream, pipeline, false, 20, "Train on TSB, test on MY; no dynamic priors", "genderTrainTSBEvalMyNoDynPriors.csv");
 
-		goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		//goldStandardStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		goldStandardStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
 		evaluateWithGazeteer(preComputedNB, goldStandardStream, pipeline, true, 20, "Train on TSB, test on MY; dynamic priors", "genderTrainTSBEvalMyInclDynPriors.csv");
 	}
 }

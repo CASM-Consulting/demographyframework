@@ -83,21 +83,24 @@ public class GenderEvaluation {
 		JsonListStreamReader goldStandardStream = null;
 
 		// Cross Validation over Male vs. Female Model (TSB labelled, incl Gazeteer)
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification TSB labelled (incl Gazeteer)", "genderClassificationMaleVsFemaleTSBLabelledInclGazeteer.csv");
 
 		// Cross Validation over Male vs. Female Model (my labelled, incl Gazeteer)
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification my labelled (incl Gazeteer)", "genderClassificationMaleVsFemalemyLabelledInclGazeteer.csv");
 
 		// Cross Validation over Male vs. Female Model (merged, incl Gazeteer)
-		trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
@@ -145,14 +148,14 @@ public class GenderEvaluation {
 		System.out.println("\tNB Leftover Macro F1-Score: " + ge.macroF1ScoreNB );
 		System.out.println("\t----------------------------------------------");
 
-		String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
-		try {
-			ge.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
-			ge.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
-			ge.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+		//String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
+		//try {
+		//	ge.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
+		//	ge.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
+		//	ge.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
+		//} catch (IOException ex) {
+		//	ex.printStackTrace();
+		//}
 
 		ge.accuracy = 0.;
 		ge.weightedPrecision = 0.;
