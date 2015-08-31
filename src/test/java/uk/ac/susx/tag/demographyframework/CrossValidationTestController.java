@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import uk.ac.susx.tag.classificationframework.Util;
 import uk.ac.susx.tag.classificationframework.classifiers.NaiveBayesClassifier;
-import uk.ac.susx.tag.classificationframework.crossvalidation.KFoldCrossValidation;
+//import uk.ac.susx.tag.classificationframework.crossvalidation.KFoldCrossValidation;
 import uk.ac.susx.tag.classificationframework.datastructures.ProcessedInstance;
 import uk.ac.susx.tag.classificationframework.featureextraction.pipelines.FeatureExtractionPipeline;
 import uk.ac.susx.tag.classificationframework.jsonhandling.JsonListStreamReader;
@@ -186,10 +186,10 @@ public class CrossValidationTestController {
 
 	private static void crossValidateClassifier(FeatureExtractionPipeline pipeline, List<ProcessedInstance> data, String title) {
 		System.out.println("Starting Cross Validation...");
-		KFoldCrossValidation<NaiveBayesClassifier> kf = new KFoldCrossValidation<>(NaiveBayesClassifier.class, pipeline, data);
+		//KFoldCrossValidation<NaiveBayesClassifier> kf = new KFoldCrossValidation<>(NaiveBayesClassifier.class, pipeline, data);
 
-		kf.crossValidateClassifier(10);
-
+		//kf.crossValidateClassifier(10);
+		/*
  		System.out.println(title);
 		System.out.println("\tAccuracy: " + kf.getAccuracy());
 		System.out.println("\t----------------------------------------------");
@@ -200,7 +200,7 @@ public class CrossValidationTestController {
 		System.out.println("\tMacro Precision: " + kf.getMacroPrecision());
 		System.out.println("\tMacro Recall: " + kf.getMacroRecall());
 		System.out.println("\tMacro F1-Score: " + kf.getMacroF1Score());
-		System.out.println("================================================");
+		System.out.println("================================================"*/
 	}
 
 }

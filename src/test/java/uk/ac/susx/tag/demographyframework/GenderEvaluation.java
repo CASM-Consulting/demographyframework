@@ -82,30 +82,45 @@ public class GenderEvaluation {
 		List<Instance> trainingData = null;
 		JsonListStreamReader goldStandardStream = null;
 
-		// Cross Validation over Male vs. Female Model (TSB labelled, incl Gazeteer)
-		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
-		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
-		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
-		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+//		// Cross Validation over Male vs. Female Model (TSB labelled, incl Gazeteer)
+//		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+//		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender_tsb/profile_description_only_dataset.json"), gson);
+//		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+//		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+//
+//		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification TSB labelled (incl Gazeteer)", "genderClassificationMaleVsFemaleTSBLabelledInclGazeteer.csv");
+//
+//		// Cross Validation over Male vs. Female Model (my labelled, incl Gazeteer)
+//		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+//		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
+//		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+//		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+//
+//		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification my labelled (incl Gazeteer)", "genderClassificationMaleVsFemalemyLabelledInclGazeteer.csv");
 
-		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification TSB labelled (incl Gazeteer)", "genderClassificationMaleVsFemaleTSBLabelledInclGazeteer.csv");
-
-		// Cross Validation over Male vs. Female Model (my labelled, incl Gazeteer)
-		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
-		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/profile_description_only.json"), gson);
-		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
-		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
-
-		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification my labelled (incl Gazeteer)", "genderClassificationMaleVsFemalemyLabelledInclGazeteer.csv");
-
-		// Cross Validation over Male vs. Female Model (merged, incl Gazeteer)
+		// Cross Validation over Male vs. Female Model (IM, incl Gazeteer)
 		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
-		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/_clean/gender/profile_description_incl_name_dataset_IM.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
-		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification merged labelled (incl Gazeteer)", "genderClassificationMaleVsFemalemyLabelledInclGazeteer.csv");
+		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification IM (incl Gazeteer)", "genderClassificationMaleVsFemaleIMInclGazeteer.csv");
 
+		// Cross Validation over Male vs. Female Model (TK, incl Gazeteer)
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/_clean/gender/profile_description_incl_name_dataset_TK.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+
+		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification TK (incl Gazeteer)", "genderClassificationMaleVsFemaleTKInclGazeteer.csv");
+
+		// Cross Validation over Male vs. Female Model (Merged, incl Gazeteer)
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/gender/gender_labelling_male_vs_female_my_tsb_merged_gazeteer_enabled.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/_clean/gender/profile_description_incl_name_dataset_merged.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+
+		ge.crossValidateTheStuff(ge, trainingData, pipeline, "Gender Classification Merged (incl Gazeteer)", "genderClassificationMaleVsFemaleMergedInclGazeteer.csv");
 	}
 
 	public void crossValidateTheStuff(GenderEvaluation ge, List<Instance> trainingData, FeatureExtractionPipeline pipeline, String title, String fname) throws URISyntaxException, InstantiationException, IllegalAccessException, IOException {
@@ -147,15 +162,21 @@ public class GenderEvaluation {
 		System.out.println("\tNB Leftover Macro Recall: " + ge.macroRecallNB );
 		System.out.println("\tNB Leftover Macro F1-Score: " + ge.macroF1ScoreNB );
 		System.out.println("\t----------------------------------------------");
+		System.out.println("\tLabel Map:");
+		for (int labelIndex : pipeline.getLabelIndexer().getIndices()) {
+			System.out.println(String.format("\t\tidx=%d; label=%s", labelIndex, pipeline.labelString(labelIndex)));
+		}
+		System.out.println("\t----------------------------------------------");
 
 		//String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
-		//try {
-		//	ge.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
-		//	ge.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
-		//	ge.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
-		//} catch (IOException ex) {
-		//	ex.printStackTrace();
-		//}
+		String basePath = "/Users/thomas/DevSandbox/EpicDataShelf/tag-lab/polly/_clean/_results/gender/";
+		try {
+			ge.saveConfusionMatrixAsCsv(basePath + fname, actual, predicted);
+			ge.saveConfusionMatrixAsCsv(basePath + "Gazeteer" + fname, actualGazeteer, predictedGazeteer);
+			ge.saveConfusionMatrixAsCsv(basePath + "NBLeftover" + fname, actualNB, predictedNB);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 
 		ge.accuracy = 0.;
 		ge.weightedPrecision = 0.;
@@ -313,9 +334,6 @@ public class GenderEvaluation {
 						predictedLabel = classifier.bestLabel(p.features);
 						gsLabel = p.getLabel();
 
-						predicted.add(predictedLabel);
-						actual.add(gsLabel);
-
 						predictedDocs++;
 
 						predictedNB.add(predictedLabel);
@@ -350,6 +368,9 @@ public class GenderEvaluation {
 							falsePositivesGazeteer[predictedLabel]++;
 						}
 					}
+
+					predicted.add(predictedLabel);
+					actual.add(gsLabel);
 
 					totalDocuments++;
 					docsOfClass[gsLabel]++;

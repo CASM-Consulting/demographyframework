@@ -138,11 +138,12 @@ public class GenderDynamicPriorsEvaluation {
 		System.out.println("\t----------------------------------------------");
 
 		//String basePath = "/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/_results/polly/";
-		//try {
-		//	saveConfusionMatrixAsCsv(basePath + fname);
-		//} catch (IOException ex) {
-		//	ex.printStackTrace();
-		//}
+		String basePath = "/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/_results/polly/09072015/";
+		try {
+			saveConfusionMatrixAsCsv(basePath + fname);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 
 		accuracy = 0.;
 		weightedPrecision = 0.;

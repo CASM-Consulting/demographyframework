@@ -86,13 +86,22 @@ public class AgeEvaluation {
 		List<Instance> trainingData = null;
 		JsonListStreamReader goldStandardStream = null;
 
-		// Cross Validation over Age Profile Descriptions, coarse, incl 2-4 digit
+		// Cross Validation over Age Profile Descriptions, coarse, incl 2-4 digit - IM
 		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
 		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
 		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
 		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
 		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Profile Descriptions; Coarse Grained; incl 2-4 digits", "ageClassificationProfileDescriptionCoarseIncl24digits.csv", false);
+
+		// Cross Validation over Age Profile Descriptions, coarse, incl 2-4 digit - 4dCI
+		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
+		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_coarse.json"), gson);
+		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+
+		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Profile Descriptions; Coarse Grained; incl 2-4 digits", "ageClassificationProfileDescriptionCoarseIncl24digits.csv", false);
+
 
 		// Cross Validation over Age Profile Descriptions, fine, incl 2-4 digit
 		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/profile_description_dataset_incl_screen_name_fine.json"), gson);
@@ -104,24 +113,24 @@ public class AgeEvaluation {
 
 		// Cross Validation over Age Tweets, coarse, incl 2-4 digit
 		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
-		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
-		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
-		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+		//trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_coarse.json"), gson);
+		//pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		//trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
-		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Tweets; Coarse Grained; incl 2-4 digits", "ageClassificationTweetsCoarseIncl24digits.csv", false);
+		//ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Tweets; Coarse Grained; incl 2-4 digits", "ageClassificationTweetsCoarseIncl24digits.csv", false);
 
 		// Cross Validation over Age Tweets, fine, incl 2-4 digit
 		//trainingStream = new JsonListStreamReader(new File("/Volumes/LocalDataHD/thk22/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
-		trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
-		pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
-		trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
+		//trainingStream = new JsonListStreamReader(new File("/Users/thomas/DevSandbox/InfiniteSandbox/tag-lab/demograph/resources/datasets/age/tweets_dataset_incl_screen_name_fine.json"), gson);
+		//pipeline = uk.ac.susx.tag.classificationframework.Util.buildBasicPipeline(true, false);
+		//trainingData = Lists.newLinkedList(trainingStream.iterableOverInstances());
 
-		ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Tweets; Fine Grained; incl 2-4 digits", "ageClassificationTweetsFineIncl24digits.csv", true);
+		//ae.crossValidateTheStuff(ae, trainingData, pipeline, "Age Classification - Tweets; Fine Grained; incl 2-4 digits", "ageClassificationTweetsFineIncl24digits.csv", true);
 
 	}
 
 	public void crossValidateTheStuff(AgeEvaluation ae, List<Instance> trainingData, FeatureExtractionPipeline pipeline, String title, String fname, boolean fineGrained) throws URISyntaxException, InstantiationException, IllegalAccessException, IOException {
-		ae.crossValidateGenderClassifier(trainingData, pipeline, NaiveBayesClassifier.class, 10, fineGrained);
+		ae.crossValidateAgeClassifier(trainingData, pipeline, NaiveBayesClassifier.class, 10, fineGrained);
 
 		System.out.println(title);
 		System.out.println("\tAccuracy: " + ae.accuracy);
@@ -289,7 +298,7 @@ public class AgeEvaluation {
 		return ageGroup;
 	}
 
-	public void crossValidateGenderClassifier(List<Instance> instances, FeatureExtractionPipeline pipeline, Class<NaiveBayesClassifier> khlavKalash, int numFolds, boolean fineGrained) throws IOException, URISyntaxException, IllegalAccessException, InstantiationException {
+	public void crossValidateAgeClassifier(List<Instance> instances, FeatureExtractionPipeline pipeline, Class<NaiveBayesClassifier> khlavKalash, int numFolds, boolean fineGrained) throws IOException, URISyntaxException, IllegalAccessException, InstantiationException {
 		// Create IndexSet and shuffle it
 		List<Integer> indexSet = createIndexSet(instances.size());
 		Collections.shuffle(indexSet, new Random(42));

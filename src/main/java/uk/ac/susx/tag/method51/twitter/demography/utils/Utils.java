@@ -47,6 +47,8 @@ public final class Utils {
 		splitters.add("-");
 		splitters.add(".");
 		splitters.add(",");
+		splitters.add("_");
+		splitters.add(";");
 		splitters.add("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])"); // Epic camelCase splitter Regex, courtesy of http://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced
 
 		return Utils.extractName(twitterName, splitters);
